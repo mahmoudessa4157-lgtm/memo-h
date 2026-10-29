@@ -22,8 +22,12 @@ export default async function handler(req, res) {
   const token = urlParams.get('token');
   if (!token) return res.status(400).send("Token missing");
 
-  const body = req.body;
-  if (!body.message || !body.message.text) return res.status(200).send("OK");
+  let body = req.body;
+  if (typeof body === 'string') {
+    try { body = JSON.parse(body); } catch(e) {}
+  }
+
+  if (!body || !body.message || !body.message.text) return res.status(200).send("OK");
 
   const chatId = body.message.chat.id;
   const text = body.message.text;
